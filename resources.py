@@ -1,33 +1,42 @@
 from  config import *
 import pygame as pg
-
 class Resources:
-
-        player_image_r = [pg.image.load("cat3.PNG"),
-                          pg.image.load("cat4.PNG"),
-                          pg.image.load("cat6.PNG"),
-                          pg.image.load("cat7.PNG")]
-
-
-        player_image_l = [pg.transform.flip(player_image_r[0], True, False),
-                          pg.transform.flip(player_image_r[1], True, False),
-                          pg.transform.flip(player_image_r[2], True, False),
-                          pg.transform.flip(player_image_r[3], True, False)]
+    def __init__(self):
+        self.player_image_r = [pg.image.load("cat3.PNG").convert_alpha(),
+                          pg.image.load("cat4.PNG").convert_alpha(),
+                          pg.image.load("cat6.PNG").convert_alpha(),
+                          pg.image.load("cat7.PNG").convert_alpha()]
 
 
+        self.player_image_l = [pg.transform.flip(self.player_image_r[0], True, False),
+                          pg.transform.flip(self.player_image_r[1], True, False),
+                          pg.transform.flip(self.player_image_r[2], True, False),
+                          pg.transform.flip(self.player_image_r[3], True, False)]
 
-        background = [pg.transform.scale(pg.image.load("aa.png"), (WIDTH, HEIGHT)),
-                      pg.transform.scale(pg.image.load("fon.png"), (WIDTH, HEIGHT)),
-                      pg.transform.scale(pg.image.load("kr.png"), (WIDTH, HEIGHT))]
+        self.player_img_dead =[pg.image.load("cat_dead.png").convert_alpha()]
+        self.player_img_dead.append(pg.transform.flip(self.player_img_dead[0], True, False))
 
-        textures = {"ground_bottom": pg.transform.scale(pg.image.load("ground_bottom.png"), (BLOK_SIZE, BLOK_SIZE)),
-                    "ground_top": pg.transform.scale(pg.image.load("ground_top.png"), (BLOK_SIZE, BLOK_SIZE)),
-                    "y": pg.transform.scale(pg.image.load("y.png"), (BLOK_SIZE, BLOK_SIZE)),
-                    "zabor": pg.transform.scale(pg.image.load("zabor.png"), (BLOK_SIZE, BLOK_SIZE)),
-                    "box": pg.transform.scale(pg.image.load("box.png"), (BLOK_SIZE, BLOK_SIZE))}
 
-        texture_symbols = {"+": textures["box"],
-                           ".": textures["y"],
-                           "#": textures["ground_bottom"],
-                           "=": textures["ground_top"],
-                           "%": textures["zabor"]}
+
+        self.background = [pg.transform.scale(pg.image.load("aa.png"), (WIDTH, HEIGHT)).convert_alpha(),
+                      pg.transform.scale(pg.image.load("fon.png"), (WIDTH, HEIGHT)).convert_alpha(),
+                      pg.transform.scale(pg.image.load("kr.png"), (WIDTH, HEIGHT)).convert_alpha()]
+
+        self.textures = {"ground_bottom": pg.transform.scale(pg.image.load("ground_bottom.png"), (BLOK_SIZE, BLOK_SIZE)).convert_alpha(),
+                    "ground_top": pg.transform.scale(pg.image.load("ground_top.png"), (BLOK_SIZE, BLOK_SIZE)).convert_alpha(),
+                    "y": pg.transform.scale(pg.image.load("y.png"), (BLOK_SIZE, BLOK_SIZE)).convert_alpha(),
+                    "zabor": pg.transform.scale(pg.image.load("zabor.png"), (BLOK_SIZE, BLOK_SIZE)).convert_alpha(),
+                    "box": pg.transform.scale(pg.image.load("box.png"), (BLOK_SIZE, BLOK_SIZE)).convert_alpha(),
+                    "heart": pg.transform.scale(pg.image.load("heart.png"), (BLOK_SIZE, BLOK_SIZE)).convert_alpha(),
+                    "fish": pg.transform.scale(pg.image.load("fish.png"), (BLOK_SIZE, BLOK_SIZE)).convert_alpha(),
+                    "door": [pg.transform.scale(pg.image.load("open_door.png"), (BLOK_SIZE*2, BLOK_SIZE*3)).convert_alpha(),
+                            pg.transform.scale(pg.image.load("close_door.png"),(BLOK_SIZE * 2, BLOK_SIZE * 3)).convert_alpha()]}
+
+        self.texture_symbols = {"+": self.textures["box"],
+                           ".": self.textures["y"],
+                           "#": self.textures["ground_bottom"],
+                           "=": self.textures["ground_top"],
+                           "%": self.textures["zabor"],
+                           "h": self.textures["heart"],
+                           "f": self.textures["fish"],
+                           "|": self.textures["door"]}

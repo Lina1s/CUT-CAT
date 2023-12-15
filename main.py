@@ -5,6 +5,7 @@ from knopka import ImageKnopka
 from player import Player
 from config import *
 from level import Level
+from other import *
 from resources import Resources
 
 pg.init()
@@ -15,7 +16,11 @@ clock = pg.time.Clock()
 FPS = 60
 
 pg.mixer.music.load("meoww.mp3")
-player = Player(sc, Resources.player_image_r, Resources.player_image_l)
+
+rsc = Resources()
+main_font = pg.font.SysFont("Gunny Rewritten", 30)
+
+player = Player(sc, rsc.player_image_r, rsc.player_image_l, rsc.player_img_dead, main_font)
 
 
 
@@ -53,22 +58,32 @@ def main_menu():
 def new_game():
     scroll_x = 0 # Camera
     scroll_y = 0
-    level = Level(sc, Resources.textures, [-100, -800])
+
+    level = Level(sc, rsc.texture_symbols, [-100, -800])
+
     pg.mixer.music.play(-1)
+
+    UI_textures = {"hp": pg.transform.scale(pg.image.load("heart.png"), (50, 50)),
+                   "fish": pg.transform.scale(pg.image.load("fish.png"), (50, 50))}
+
+    message_manager = Message(main_font, [WIDTH // 2, HEIGHT - 100], sc)
+
+
     while True:
         delta_time = clock.tick(FPS)
+        player.hp -= delta_time * 0.001
         sc.fill((200, 200, 200))
-        sc.blit(Resources.background[1], (-scroll_x / 300, -scroll_y / 300))
+        sc.blit(rsc.background[1], (-scroll_x / 300, -scroll_y / 300))
 
-        sc.blit(Resources.background[2], (-scroll_x / 40, -scroll_y / 40))
+        sc.blit(rsc.background[2], (-scroll_x / 40, -scroll_y / 40))
 
-        sc.blit(Resources.background[0], (-scroll_x / 4, -scroll_y / 4))
+        sc.blit(rsc.background[0], (-scroll_x / 4, -scroll_y / 4))
 
 
         for ev in pg.event.get():
             if ev.type == pg.QUIT:
                 exit()
-        player.update(delta_time, level.update(scroll=[scroll_x, scroll_y]), (scroll_x, scroll_y))
+        player_data: dict = player.update(delta_time, level.update(scroll=[scroll_x, scroll_y]), (scroll_x, scroll_y))
         player.draw()
 
         if player.rect.x - scroll_x != 0:
@@ -78,7 +93,18 @@ def new_game():
             scroll_y += (player.rect.y - scroll_y - (HEIGHT/2))/7
 
 
+
+
+        # UI
+        sc.blit(UI_textures["hp"], (20, HEIGHT - 140))
+        sc.blit(main_font.render(str(int(player.hp)), True, (0, 0, 0)), (80, HEIGHT-130))
+
+        sc.blit(UI_textures["fish"], (20, HEIGHT - 240))
+        sc.blit(main_font.render(str(int(player.collected_fish)), True, (0, 0, 0)), (80, HEIGHT - 230))
+        message_manager.update(delta_time)
+        if "message" in player_data:
+            message_manager.show_message(player_data["message"][0], player_data["message"][1])
+
         pg.display.update()
 new_game()
-
 
