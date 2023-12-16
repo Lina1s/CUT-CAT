@@ -1,4 +1,3 @@
-import pygame
 import pygame as pg
 import sys
 from knopka import ImageKnopka
@@ -18,11 +17,9 @@ FPS = 60
 pg.mixer.music.load("meoww.mp3")
 
 rsc = Resources()
-main_font = pg.font.SysFont("Gunny Rewritten", 30)
+main_font = pg.font.SysFont("Bauhaus 93", 30)
 
 player = Player(sc, rsc.player_image_r, rsc.player_image_l, rsc.player_img_dead, main_font)
-
-
 
 
 def main_menu():
@@ -32,7 +29,7 @@ def main_menu():
     while running:
         sc.fill((0, 0, 0))
         sc.blit(main_background, (0, 0))
-        font = pygame.font.SysFont('Bauhaus 93', 70)
+        font = pg.font.SysFont('Bauhaus 93', 70)
         text_surface = font.render("CUT CAT", True, (0, 0, 0))
         text_rect = text_surface.get_rect(center=(570, 80))
         sc.blit(text_surface, text_rect)
@@ -55,11 +52,13 @@ def main_menu():
         pg.display.flip()
 
 
+
+
 def new_game():
-    scroll_x = 0 # Camera
+    scroll_x = 0  # Camera
     scroll_y = 0
 
-    level = Level(sc, rsc.texture_symbols, [-100, -800])
+    level = Level(sc, rsc.texture_symbols, [-200, -400])
 
     pg.mixer.music.play(-1)
 
@@ -68,43 +67,54 @@ def new_game():
 
     message_manager = Message(main_font, [WIDTH // 2, HEIGHT - 100], sc)
 
-
     while True:
         delta_time = clock.tick(FPS)
-        player.hp -= delta_time * 0.001
+        player.hp -= delta_time * 0.0008
         sc.fill((200, 200, 200))
-        sc.blit(rsc.background[1], (-scroll_x / 300, -scroll_y / 300))
+        sc.blit(rsc.background[1], (WIDTH - scroll_x / 500, -scroll_y / 500))
+        sc.blit(rsc.background[1], (-scroll_x / 500, -scroll_y / 500))
+        sc.blit(rsc.background[1], (-scroll_x / 500, -scroll_y / 500))
 
-        sc.blit(rsc.background[2], (-scroll_x / 40, -scroll_y / 40))
+        sc.blit(rsc.background[2], (WIDTH - scroll_x / 40, 80 - scroll_y / 40))
+        sc.blit(rsc.background[2], (-scroll_x / 40, 80 - scroll_y / 40))
+        sc.blit(rsc.background[2], (-scroll_x / 40, 80 - scroll_y / 40))
 
-        sc.blit(rsc.background[0], (-scroll_x / 4, -scroll_y / 4))
-
+        sc.blit(rsc.background[0], (WIDTH - scroll_x / 4, 10 - scroll_y / 4))
+        sc.blit(rsc.background[0], (-scroll_x / 4, 10 - scroll_y / 4))
+        sc.blit(rsc.background[0], (-scroll_x / 4, 10 - scroll_y / 4))
 
         for ev in pg.event.get():
             if ev.type == pg.QUIT:
                 exit()
-        player_data: dict = player.update(delta_time, level.update(scroll=[scroll_x, scroll_y]), (scroll_x, scroll_y))
+        player_data = player.update(delta_time, level.update(scroll=[scroll_x, scroll_y]), (scroll_x, scroll_y))
         player.draw()
-
+        # Camera
         if player.rect.x - scroll_x != 0:
-            scroll_x += (player.rect.x - scroll_x - (WIDTH/2))/7
+            scroll_x += (player.rect.x - scroll_x - (WIDTH / 2)) / 7
 
         if player.rect.y - scroll_y != 0:
-            scroll_y += (player.rect.y - scroll_y - (HEIGHT/2))/7
-
-
-
+            scroll_y += (player.rect.y - scroll_y - (HEIGHT / 2)) / 7
 
         # UI
-        sc.blit(UI_textures["hp"], (20, HEIGHT - 140))
-        sc.blit(main_font.render(str(int(player.hp)), True, (0, 0, 0)), (80, HEIGHT-130))
+        sc.blit(UI_textures["hp"], (20, HEIGHT - 640))
+        sc.blit(main_font.render(str(int(player.hp)), True, (0, 0, 0)), (90, HEIGHT - 625))
 
-        sc.blit(UI_textures["fish"], (20, HEIGHT - 240))
-        sc.blit(main_font.render(str(int(player.collected_fish)), True, (0, 0, 0)), (80, HEIGHT - 230))
+        sc.blit(UI_textures["fish"], (20, HEIGHT - 540))
+        sc.blit(main_font.render(str(int(player.collected_fish)), True, (0, 0, 0)), (90, HEIGHT - 525))
         message_manager.update(delta_time)
         if "message" in player_data:
             message_manager.show_message(player_data["message"][0], player_data["message"][1])
+        if player.hp <= 0:
+            keys = pg.key.get_pressed()
+            if keys[pg.K_r]:
+                level.start()
+        if "message_1" in player_data:
+            message_manager.show_message(player_data["message_1"][0], player_data["message_1"][1])
+            pg.quit()
+
+
 
         pg.display.update()
-new_game()
 
+
+main_menu()

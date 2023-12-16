@@ -1,6 +1,5 @@
-import pygame
-from other import *
 import pygame as pg
+from other import *
 from config import *
 from objects import *
 
@@ -15,7 +14,7 @@ class Player:
         self.movement = [0, 0]
         self.old_dir = [0, 0]
         self.rect = self.imgs_l[0].get_rect()
-        self.rect.topleft = [200, -100]
+        self.rect.topleft = [200, 300]
         self.anim_count = 0
         self.is_run = False
         self.delta_time = 0
@@ -32,15 +31,16 @@ class Player:
         self.font = font
         self.return_to_main_data = {}
 
-
     def draw(self):
         self.anim_count %= 400
         if self.hp > 0:
             if self.is_run:
                 if self.movement[0] > 0:
-                    self.sc.blit(self.imgs_r[int(self.anim_count*0.001*6)], (self.rect.x - self.scroll_x, self.rect.y - self.scroll_y))
+                    self.sc.blit(self.imgs_r[int(self.anim_count * 0.001 * 6)],
+                                 (self.rect.x - self.scroll_x, self.rect.y - self.scroll_y))
                 if self.movement[0] < 0:
-                    self.sc.blit(self.imgs_l[int(self.anim_count*0.001*6)], (self.rect.x - self.scroll_x, self.rect.y - self.scroll_y))
+                    self.sc.blit(self.imgs_l[int(self.anim_count * 0.001 * 6)],
+                                 (self.rect.x - self.scroll_x, self.rect.y - self.scroll_y))
             else:
                 if self.old_dir[0] > 0:
                     self.sc.blit(self.imgs_r[0], (self.rect.x - self.scroll_x, self.rect.y - self.scroll_y))
@@ -51,6 +51,7 @@ class Player:
                 self.sc.blit(self.imgs_dead[1], (self.rect.x - self.scroll_x, self.rect.y - self.scroll_y))
             else:
                 self.sc.blit(self.imgs_dead[0], (self.rect.x - self.scroll_x, self.rect.y - self.scroll_y))
+
     def update(self, delta_time, blocks, scroll):
         self.return_to_main_data = {}
         self.scroll_x = scroll[0]
@@ -81,9 +82,10 @@ class Player:
         if keys[pg.K_SPACE] and self.hp > 0:
             return True
         return False
+
     def physics(self, blocks):
         self.air_time += -self.delta_time * 0.001
-        self.movement[1] = GRAVITY * self.air_time/3
+        self.movement[1] = GRAVITY * self.air_time / 3
         self.rect.x += self.movement[0] * self.delta_time
         collide = self.get_collision(blocks)
         for col in collide:
@@ -103,8 +105,9 @@ class Player:
         if self.is_ground:
             self.air_time = 0
             if self.get_jump():
-                self.air_time = 0.3 #скорость прыжка
+                self.air_time = 0.3  # скорость прыжка
         self.is_ground = False
+
     def get_collision(self, blocks):
         collide = []
         for col in blocks:
@@ -123,8 +126,12 @@ class Player:
                                 self.collected_fish -= 5
                                 col.open()
                             else:
-                                self.return_to_main_data = {"message": [1, "Соберите всех рыбок, чтобы открыть эту дверь"]}
+                                self.return_to_main_data = {
+                                    "message": [2, "Collect all the fish to open the door"]}
                                 collide.append(col.rect)
+                    elif col.name == "*":
+                        self.return_to_main_data = {
+                            "message_1": [2, "WIN"]}
                     else:
                         collide.append(col.rect)
 

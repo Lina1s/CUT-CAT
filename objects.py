@@ -1,6 +1,8 @@
 import pygame as pg
 from config import *
 from resources import Resources
+
+
 class Block:
     def __init__(self, pos, texture, sc, collider, name):
         self.pos = pos
@@ -9,11 +11,14 @@ class Block:
         self.collider = collider
         self.rect = pg.Rect(0, 0, 0, 0)
         self.name = name
+
     def draw(self, scroll):
         self.rect = self.texture.get_rect()
         self.rect.topleft = self.pos
         self.sc.blit(self.texture, (self.pos[0] - scroll[0], self.pos[1] - scroll[1]))
         return self
+
+
 class Removable:
     def __init__(self, pos, texture, sc, collider, name):
         self.pos = pos
@@ -23,6 +28,7 @@ class Removable:
         self.rect = pg.Rect(0, 0, 0, 0)
         self.removed = False
         self.name = name
+
     def draw(self, scroll):
         if not self.removed:
             self.rect = self.texture.get_rect()
@@ -32,6 +38,7 @@ class Removable:
 
     def remove(self):
         self.removed = True
+
 
 class Door:
     def __init__(self, pos, texture, sc, collider, name):
@@ -44,6 +51,7 @@ class Door:
         self.opened = False
         self.name = name
         self.timer = 0
+
     def draw(self, scroll):
         if not self.opened:
             self.rect = self.texture_close.get_rect()
